@@ -29,10 +29,14 @@ test.describe('getPokemonData', () => {
     await validateSchemaZod({ page }, evolutionChainData, evolutionChainSchema);
     // obtengo los nombres de las especies en la cadena evolutiva y los valido contra el resultado esperado
     const speciesNames = await evolutionTasks.logEvolutionChainData(evolutionChainData);
-    expect(speciesNames).toEqual(['squirtle', 'wartortle', 'blastoise']);
+    await test.step('Validate species names evolution chain', async () => {
+      expect(speciesNames).toEqual(['squirtle', 'wartortle', 'blastoise']);
+    });
     // ordenar en orden alfabético el nombre de las especies
     const orderedSpeciesNames = PokemonUtils.orderSpeciesByName(speciesNames);
-    expect(orderedSpeciesNames).toEqual(['blastoise', 'squirtle', 'wartortle']);
+    await test.step('Validate ordered species names', async () => {
+      expect(orderedSpeciesNames).toEqual(['blastoise', 'squirtle', 'wartortle']);
+    });
     // obtengo el peso de cada pokemon en la cadena evolutiva
     for (const speciesName of orderedSpeciesNames) {
       const response = await getpokemonDataService.getPokemonData(speciesName);
@@ -43,6 +47,12 @@ test.describe('getPokemonData', () => {
       await evolutionTasks.logPokemonWeight(pokemonData);
       pokemonWeights[speciesName] = pokemonData.weight;
     }
+    await test.step('Validate pokemon weights', async () => {
+      expect(Object.keys(pokemonWeights)).toHaveLength(3);
+      expect(pokemonWeights).toHaveProperty('blastoise');
+      expect(pokemonWeights).toHaveProperty('squirtle');
+      expect(pokemonWeights).toHaveProperty('wartortle');
+    });
     console.log('Pokemon weights:\n', pokemonWeights);
   });
 });

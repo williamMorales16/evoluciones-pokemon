@@ -7,7 +7,7 @@ Este proyecto es un conjunto de pruebas de contrato automatizadas para validar l
 
 **Datos obtenidos de:** PokeAPI (https://pokeapi.co/api/v2/)
 
-**Resultado final:** Las pruebas validan esquemas de respuesta, extraen nombres de especies en la cadena de evolución y verifican pesos de Pokémon, asegurando la integridad de los datos de la API. Al final imprime la cadena de evolución en orden alfabético.
+**Resultado final:** Las pruebas validan esquemas de respuesta, extraen nombres de especies en la cadena de evolución, los ordenan alfabéticamente y obtienen el peso de cada Pokémon, imprimiendo un registro completo de pesos en el reporte.
 
 ## Instalación y Configuración
 
@@ -119,12 +119,18 @@ Definiciones de esquemas usando Zod para validación de respuestas.
 - **evolutionChainSchema**: Esquema para validar la estructura de cadenas de evolución
 
 ### Prueba Principal (getPokemonDataContract.spec.ts)
-Test de Playwright que valida contratos de API.
+Test de Playwright que valida contratos de API de Pokémon.
 
-- **should return the correct data structure**: Test que:
-  - Obtiene cadena de evolución para Squirtle
-  - Valida esquema de respuesta
-  - Extrae nombres de especies usando EvolutionTasks
-  - Ordena los nombres alfabéticamente usando PokemonUtils
-  - Obtiene datos del Pokémon
-  - Valida esquema y registra peso
+**Suite de pruebas:** `getPokemonData`
+
+- **should return alphabetic order of species names with its weights**: Test completo con pasos definidos que:
+  1. Obtiene la cadena de evolución para Squirtle (ID: 3)
+  2. Valida el esquema de respuesta con Zod
+  3. **Paso 1 - Validate species names evolution chain**: Extrae nombres en orden evolutivo y valida que sean `['squirtle', 'wartortle', 'blastoise']`
+  4. **Paso 2 - Validate ordered species names**: Ordena alfabéticamente los nombres y valida que sean `['blastoise', 'squirtle', 'wartortle']`
+  5. **Paso 3 - Validate pokemon weights**: Para cada especie ordenada:
+     - Obtiene los datos del Pokémon vía API
+     - Valida el esquema de respuesta
+     - Extrae y registra el peso
+     - Valida que existan 3 especies con sus propiedades correctas
+  6. Imprime un registro completo de pesos en consola
